@@ -1,7 +1,7 @@
 loc_a = []
 loc_b = []
 
-IO.foreach("input_1.txt") do |line|
+IO.foreach("../input/input_1.txt") do |line|
     a, b = line.split(' ')
     loc_a.append(a.to_i)
     loc_b.append(b.to_i)

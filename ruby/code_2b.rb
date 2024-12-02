@@ -1,6 +1,6 @@
 reports = []
 
-IO.foreach("input_2.txt") do |line|
+IO.foreach("../input/input_2.txt") do |line|
     reports << line.split(' ').map(&:to_i)
 end
 
