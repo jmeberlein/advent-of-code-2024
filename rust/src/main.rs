@@ -1,7 +1,5 @@
-mod code_1a;
-mod code_1b;
-mod code_2a;
+mod code_3a;
 
 fn main() {
-    code_1b::main();
+    code_3a::main();
 }
