@@ -1,0 +1,9 @@
+# In case I attempt any Rust
+debug/
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Excluding input files
+input/
