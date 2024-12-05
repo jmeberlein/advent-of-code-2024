@@ -5,5 +5,11 @@ Cargo.lock
 **/*.rs.bk
 *.pdb
 
+# I'm not bothering with Cargo unless I need it to help with linking, mainly because
+# that would potentially be a *lot* of Cargo projects. This should exclude the compiled
+# files, while leaving the source code in place
+rust/*
+!rust/*.*
+
 # Excluding input files
 input/
