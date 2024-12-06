@@ -11,5 +11,7 @@ Cargo.lock
 rust/*
 !rust/*.*
 
+*.class
+
 # Excluding input files
 input/
