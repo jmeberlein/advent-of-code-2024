@@ -68,8 +68,7 @@ public class Code6B {
             next = curr.step();
             if (next.r < 0 || next.r >= maxR || next.c < 0 || next.c >= maxC) {
                 return false;
-            }
-            if (map.get(next.r).charAt(next.c) == '#' || (next.r == obstacle.r && next.c == obstacle.c)) {
+            } else if (map.get(next.r).charAt(next.c) == '#' || (next.r == obstacle.r && next.c == obstacle.c)) {
                 next = curr.turn();
             }
             curr = next;
@@ -105,8 +104,7 @@ public class Code6B {
             next = curr.step();
             if (next.r < 0 || next.r >= maxR || next.c < 0 || next.c >= maxC) {
                 break;
-            }
-            if (file.get(next.r).charAt(next.c) == '#') {
+            } else if (file.get(next.r).charAt(next.c) == '#') {
                 next = curr.turn();
             } else if (hasLoop(file, start, next)) {
                 obstacles.add(Arrays.asList(next.r, next.c));
