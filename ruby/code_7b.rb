@@ -1,5 +1,3 @@
-require 'set'
-
 file = IO.foreach(ARGV[0]).map &:strip
 
 def check(line)
