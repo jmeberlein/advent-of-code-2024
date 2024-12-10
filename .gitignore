@@ -12,6 +12,7 @@ rust/*
 !rust/*.*
 
 *.class
+a.out
 
 # Excluding input files
 input/
