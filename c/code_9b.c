@@ -9,6 +9,16 @@ struct Node {
     int hasMoved;
 };
 
+struct Node* createNode(struct Node *prev, struct Node *next, int id, int blocks, int hasMoved) {
+    struct Node *node = malloc(sizeof(struct Node));
+    node->prev = prev;
+    node->next = next;
+    node->id = id;
+    node->blocks = blocks;
+    node->hasMoved = hasMoved;
+    return node;
+}
+
 void printList(struct Node *head) {
     struct Node *curr = head;
     while (curr) {
@@ -23,37 +33,18 @@ void printList(struct Node *head) {
 }
 
 int main(int argc, char **argv) {
-    FILE *fptr = NULL;
-    struct Node *head = malloc(sizeof(struct Node));
+    FILE *fptr = fopen(argv[1], "r");
+    struct Node *head = createNode(NULL, NULL, 0, fgetc(fptr)-0x30, 0);
     struct Node *tail = head;
-    int i, currChar;
+    int i, j, currChar;
 
-    i = 0;
-    fptr = fopen(argv[1], "r");
-    while ((currChar = fgetc(fptr)) != EOF) {
-        if (currChar == '0') {
-            i++;
-            continue;
+    for (i = 1; (currChar = fgetc(fptr)) != EOF; i++) {
+        if (currChar != '0') {
+            tail->next = createNode(tail, NULL, i % 2 == 0 ? i / 2 : -1, currChar - 0x30, 0);
+            tail = tail->next;
         }
-
-        if (i % 2) {
-            tail->id = -1;
-        } else {
-            tail->id = i / 2;
-        }
-        tail->blocks = currChar - 0x30; // Parse char as int
-        tail->hasMoved = 0;
-        tail->next = malloc(sizeof(struct Node));
-        tail->next->prev = tail;
-        tail = tail->next;
-        i++;
     }
     fclose(fptr);
-
-    // Accidentally allocated extra node
-    tail = tail->prev;
-    free(tail->next);
-    tail->next = NULL;
 
     // printList(head);
 
@@ -72,16 +63,7 @@ int main(int argc, char **argv) {
         }
 
         if (curr && curr != tail) {
-            // Create new node
-            tmp = curr->prev;
-            curr->prev = malloc(sizeof(struct Node));
-            curr->prev->prev = tmp;
-            curr->prev->next = curr;
-            curr->prev->id = tail->id;
-            curr->prev->blocks = tail->blocks;
-            curr->prev->hasMoved = 1;
-
-            // Adjust list around it
+            curr->prev = createNode(curr->prev, curr, tail->id, tail->blocks, 1);
             curr->prev->prev->next = curr->prev;
             tail->id = -1;
             curr->blocks -= tail->blocks;
@@ -121,7 +103,6 @@ int main(int argc, char **argv) {
 
     // printList(head);
 
-    int j;
     unsigned long long sum = 0;
     i = 0;
     curr = head;
