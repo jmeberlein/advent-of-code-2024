@@ -19,19 +19,6 @@ struct Node* createNode(struct Node *prev, struct Node *next, int id, int blocks
     return node;
 }
 
-void printList(struct Node *head) {
-    struct Node *curr = head;
-    while (curr) {
-        if (curr->id >= 0) {
-            printf("[%d: %d] ", curr->id, curr->blocks);
-        } else {
-            printf("[Free: %d] ", curr->blocks);
-        }
-        curr = curr->next;
-    }
-    printf("\n");
-}
-
 int main(int argc, char **argv) {
     FILE *fptr = fopen(argv[1], "r");
     struct Node *head = createNode(NULL, NULL, 0, fgetc(fptr)-0x30, 0);
@@ -46,10 +33,8 @@ int main(int argc, char **argv) {
     }
     fclose(fptr);
 
-    // printList(head);
-
     struct Node *curr, *tmp;
-    while (tail != head) {
+    while (1) {
         while (tail->id == -1 || tail->hasMoved) {
             tail = tail->prev;
         }
@@ -58,11 +43,11 @@ int main(int argc, char **argv) {
         }
 
         curr = head;
-        while (curr && curr != tail && (curr->id != -1 || curr->blocks < tail->blocks)) {
+        while (curr != tail && (curr->id != -1 || curr->blocks < tail->blocks)) {
             curr = curr->next;
         }
 
-        if (curr && curr != tail) {
+        if (curr != tail) {
             curr->prev = createNode(curr->prev, curr, tail->id, tail->blocks, 1);
             curr->prev->prev->next = curr->prev;
             tail->id = -1;
@@ -94,14 +79,10 @@ int main(int argc, char **argv) {
                 }
                 free(tmp);
             }
-
-            // printList(head);
         }
 
         tail = tail->prev;
     }
-
-    // printList(head);
 
     unsigned long long sum = 0;
     i = 0;
