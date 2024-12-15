@@ -1,0 +1,46 @@
+loop_prize:
+read [a]
+eq [a], -1, [test]
+jmp0 [test], [done]
+read [b]
+read [c]
+read [d]
+read [e]
+read [f]
+mult [b], [c], [denom]
+mult [a], [d], [sub]
+mult [sub], -1, [sub]
+add [denom], [sub], [sub]
+mult [e], [d], [num]
+mult [f], [b], [sub]
+mult [sub], -1, [sub]
+add [num], [sub], [num]
+mult [x], 0, [x]
+loop_x:
+add [num], [denom], [num]
+add [x], 1, [x]
+jmp0 [num], [loop_next]
+lt [num], 0, [test]
+jmp0 [test], [loop_prize]
+jmp0 0, [loop_x]
+loop_next:
+mult [a], [f], [num]
+mult [c], [e], [sub]
+mult [sub], -1, [sub]
+add [num], [sub], [num]
+mult [y], 0, [y]
+loop_y:
+add [num], [denom], [num]
+add [y], 1, [y]
+jmp0 [num], [loop_fin]
+lt [num], 0, [test]
+jmp0 [test], [loop_prize]
+jmp0 0, loop_y
+loop_fin:
+mult [x], 3, [x]
+add [x], [y], [x]
+add [sum], [x], [sum]
+jmp0 0, loop_prize
+done:
+write [sum]
+exit
