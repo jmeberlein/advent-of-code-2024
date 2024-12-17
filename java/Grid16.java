@@ -189,14 +189,14 @@ public class Grid16 {
         public boolean equals(Object obj) {
             if (obj instanceof Deer) {
                 Deer d = (Deer) obj;
-                return d.location.equals(this.location) && d.direction.equals(this.direction) && d.score == this.score;
+                return d.location.equals(this.location) && d.direction.equals(this.direction) && d.route.equals(this.route);
             } else {
                 return false;
             }
         }
 
         public int hashCode() {
-            return this.location.r + 20 * this.location.c + 400 * this.direction.r + 4000 * this.direction.c + 40000 * this.score + 40000000 * this.route.hashCode();
+            return Objects.hash(this.direction, this.location, this.route);
         }
     }
 }
