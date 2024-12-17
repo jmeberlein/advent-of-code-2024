@@ -71,7 +71,9 @@ public class Code16 {
         });
         queue.add(grid.start);
         dist.put(grid.start, grid.spawnDeer());
-        prev.put(grid.start, new HashSet<>());
+        for (Point node : grid.nodes) {
+            prev.put(node, new HashSet<>());
+        }
         prev.get(grid.start).add(grid.spawnDeer());
 
         Point curr;
@@ -84,118 +86,61 @@ public class Code16 {
             ccw.prance();
             cw.prance();
 
-            if (dist.get(forward.location) == null) {
-                dist.put(forward.location, forward);
-                queue.add(forward.location);
-
-                prev.put(forward.location, new HashSet<>());
+            if (dist.get(forward.location) == null || forward.score <= dist.get(forward.location).score + 1000) {
                 prev.get(forward.location).add(forward);
                 for (Grid16.Deer deer : prev.get(curr)) {
-                    Grid16.Deer tmpForward = deer.clone();
-                    Grid16.Deer tmpCCW = deer.ccw();
-                    Grid16.Deer tmpCW = deer.cw();
-
-                    tmpForward.prance();
-                    tmpCCW.prance();
-                    tmpCW.prance();
-
-                    if (tmpForward.location.equals(forward.location)) {
-                        prev.get(forward.location).add(tmpForward);
-                    }
-                    if (tmpCCW.location.equals(forward.location)) {
-                        prev.get(forward.location).add(tmpCCW);
-                    }
-                    if (tmpCW.location.equals(forward.location)) {
-                        prev.get(forward.location).add(tmpCW);
-                    }
+                    Grid16.Deer tmp = deer.clone();
+                    tmp.setDirection(dist.get(curr).direction);
+                    tmp.prance();
+                    prev.get(forward.location).add(tmp);
                 }
-            } else if (forward.score < dist.get(forward.location).score) {
-                dist.put(forward.location, forward);
-                queue.remove(forward.location);
-                queue.add(forward.location);
 
-                prev.put(forward.location, prev.get(forward.location).stream().filter(deer ->
-                    deer.score <= forward.score + 1000
-                ).collect(Collectors.toSet()));
-                prev.get(forward.location).add(forward);
-            } else if (forward.score <= dist.get(forward.location).score + 1000) {
-                prev.get(forward.location).add(forward);
+                if (dist.get(forward.location) == null || forward.score < dist.get(forward.location).score) {
+                    dist.put(forward.location, forward);
+                    queue.remove(forward.location);
+                    queue.add(forward.location);
+                    prev.put(forward.location, prev.get(forward.location).stream().filter(deer ->
+                        deer.score <= forward.score + 1000
+                    ).collect(Collectors.toSet()));
+                }
             }
 
-            if (dist.get(ccw.location) == null) {
-                dist.put(ccw.location, ccw);
-                queue.add(ccw.location);
-
-                prev.put(ccw.location, new HashSet<>());
+            if (dist.get(ccw.location) == null || ccw.score <= dist.get(ccw.location).score + 1000) {
                 prev.get(ccw.location).add(ccw);
                 for (Grid16.Deer deer : prev.get(curr)) {
-                    Grid16.Deer tmpForward = deer.clone();
-                    Grid16.Deer tmpCCW = deer.ccw();
-                    Grid16.Deer tmpCW = deer.cw();
-
-                    tmpForward.prance();
-                    tmpCCW.prance();
-                    tmpCW.prance();
-
-                    if (tmpForward.location.equals(ccw.location)) {
-                        prev.get(ccw.location).add(tmpForward);
-                    }
-                    if (tmpCCW.location.equals(ccw.location)) {
-                        prev.get(ccw.location).add(tmpCCW);
-                    }
-                    if (tmpCW.location.equals(ccw.location)) {
-                        prev.get(ccw.location).add(tmpCW);
-                    }
+                    Grid16.Deer tmp = deer.clone();
+                    tmp.setDirection(dist.get(curr).direction.ccw());
+                    tmp.prance();
+                    prev.get(ccw.location).add(tmp);
                 }
-            } else if (ccw.score < dist.get(ccw.location).score) {
-                dist.put(ccw.location, ccw);
-                queue.remove(ccw.location);
-                queue.add(ccw.location);
 
-                prev.put(ccw.location, prev.get(ccw.location).stream().filter(deer ->
-                    deer.score <= ccw.score + 1000
-                ).collect(Collectors.toSet()));
-                prev.get(ccw.location).add(ccw);
-            } else if (ccw.score <= dist.get(ccw.location).score + 1000) {
-                prev.get(ccw.location).add(ccw);
+                if (dist.get(ccw.location) == null || ccw.score < dist.get(ccw.location).score) {
+                    dist.put(ccw.location, ccw);
+                    queue.remove(ccw.location);
+                    queue.add(ccw.location);
+                    prev.put(ccw.location, prev.get(ccw.location).stream().filter(deer ->
+                        deer.score <= ccw.score + 1000
+                    ).collect(Collectors.toSet()));
+                }
             }
 
-            if (dist.get(cw.location) == null) {
-                dist.put(cw.location, cw);
-                queue.add(cw.location);
-
-                prev.put(cw.location, new HashSet<>());
-                prev.get(cw.location).add(cw);
+            if (dist.get(cw.location) == null || cw.score <= dist.get(cw.location).score + 1000) {
+                prev.get(cw.location).add(forward);
                 for (Grid16.Deer deer : prev.get(curr)) {
-                    Grid16.Deer tmpForward = deer.clone();
-                    Grid16.Deer tmpCCW = deer.ccw();
-                    Grid16.Deer tmpCW = deer.cw();
-
-                    tmpForward.prance();
-                    tmpCCW.prance();
-                    tmpCW.prance();
-
-                    if (tmpForward.location.equals(cw.location)) {
-                        prev.get(cw.location).add(tmpForward);
-                    }
-                    if (tmpCCW.location.equals(cw.location)) {
-                        prev.get(cw.location).add(tmpCCW);
-                    }
-                    if (tmpCW.location.equals(cw.location)) {
-                        prev.get(cw.location).add(tmpCW);
-                    }
+                    Grid16.Deer tmp = deer.clone();
+                    tmp.setDirection(dist.get(curr).direction.cw());
+                    tmp.prance();
+                    prev.get(cw.location).add(tmp);
                 }
-            } else if (cw.score < dist.get(cw.location).score) {
-                dist.put(cw.location, cw);
-                queue.remove(cw.location);
-                queue.add(cw.location);
 
-                prev.put(cw.location, prev.get(cw.location).stream().filter(deer ->
-                    deer.score <= cw.score + 1000
-                ).collect(Collectors.toSet()));
-                prev.get(cw.location).add(cw);
-            } else if (cw.score <= dist.get(cw.location).score + 1000) {
-                prev.get(cw.location).add(cw);
+                if (dist.get(cw.location) == null || cw.score < dist.get(cw.location).score) {
+                    dist.put(cw.location, cw);
+                    queue.remove(cw.location);
+                    queue.add(cw.location);
+                    prev.put(cw.location, prev.get(cw.location).stream().filter(deer ->
+                        deer.score <= cw.score + 1000
+                    ).collect(Collectors.toSet()));
+                }
             }
         }
 
