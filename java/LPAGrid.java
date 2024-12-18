@@ -45,12 +45,9 @@ public class LPAGrid {
 
         for (int r = 0; r < this.rows; r++) {
             for (int c = 0; c < this.columns; c++) {
-                this.dist[r][c] = this.rhs[r][c] = this.INFINITY;
+                this.dist[r][c] = this.rhs[r][c] = r+c;
             }
         }
-        this.rhs[0][0] = 0;
-        this.queue.add(this.start);
-        this.update();
     }
 
     private void update() {
