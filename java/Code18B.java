@@ -38,13 +38,7 @@ public class Code18B {
         grid.resetDistances();
 
         Queue<Point> queue = new PriorityQueue<>((a,b) -> {
-            int fa = grid.getDist(a) + a.dist(grid.end);
-            int fb = grid.getDist(b) + b.dist(grid.end);
-            if (fa == fb) {
-                return a.dist(grid.end) - b.dist(grid.end);
-            } else {
-                return fa - fb;
-            }
+            return grid.getDist(a) - grid.getDist(b);
         });
         queue.add(grid.start);
 

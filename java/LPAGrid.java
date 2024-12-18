@@ -4,7 +4,6 @@ import java.util.stream.*;
 public class LPAGrid {
     private int[][] walls;
     private int[][] dist;
-    private int[][] heur;
     private int[][] rhs;
     private final int INFINITY;
     private LPAQueue queue = new LPAQueue();
@@ -16,10 +15,7 @@ public class LPAGrid {
     public final int columns;
 
     public int compare(Point a, Point b) {
-        int[] scoreA = this.getScore(a);
-        int[] scoreB = this.getScore(b);
-        return (scoreA[0] == scoreB[0]) ? (scoreA[0] - scoreB[0])
-                                        : (scoreA[1] - scoreB[1]);
+        return this.getScore(a) - this.getScore(b);
     }
 
     private class LPAQueue extends PriorityQueue<Point> {
@@ -43,7 +39,6 @@ public class LPAGrid {
         this.columns = columns;
         this.walls = new int[rows][columns];
         this.dist = new int[rows][columns];
-        this.heur = new int[rows][columns];
         this.rhs = new int[rows][columns];
         this.end = new Point(rows - 1, columns - 1);
         this.INFINITY = 2 * rows * columns;
@@ -51,7 +46,6 @@ public class LPAGrid {
         for (int r = 0; r < this.rows; r++) {
             for (int c = 0; c < this.columns; c++) {
                 this.dist[r][c] = this.rhs[r][c] = this.INFINITY;
-                this.heur[r][c] = Math.abs(this.end.r - r) + Math.abs(this.end.c - c);
             }
         }
         this.rhs[0][0] = 0;
@@ -112,21 +106,13 @@ public class LPAGrid {
         return this.rhs[p.r][p.c];
     }
 
-    private int getHeuristic(Point p) {
+    private int getScore(Point p) {
         if (!this.isInBounds(p) || this.isWall(p)) {
             return this.INFINITY;
         }
 
-        return this.heur[p.r][p.c];
-    }
-
-    private int[] getScore(Point p) {
-        if (!this.isInBounds(p) || this.isWall(p)) {
-            return new int[]{this.INFINITY, this.INFINITY};
-        }
-
         int distOrEst = Math.min(this.dist[p.r][p.c], this.rhs[p.r][p.c]);
-        return new int[]{Math.min(this.INFINITY, distOrEst + this.heur[p.r][p.c]), distOrEst};
+        return Math.min(this.INFINITY, distOrEst);
     }
 
     private boolean isConsistent(Point p) {
@@ -163,19 +149,14 @@ public class LPAGrid {
             }
         }
 
-        // if (this.rhs[p.r][p.c] > minDist) {
-            this.rhs[p.r][p.c] = minDist;
-            // if (this.dist[p.r][p.c] != minDist) {
-                this.queue.remove(p);
-                this.queue.add(p);
-            // }
-        // }
+        this.rhs[p.r][p.c] = minDist;
+        this.queue.remove(p);
+        this.queue.add(p);
     }
 
     public boolean addWall(Point p) {
         if (this.isInBounds(p) && !this.isWall(p)) {
             this.walls[p.r][p.c] = 1;
-            this.heur[p.r][p.c] = this.INFINITY;
             this.rhs[p.r][p.c] = this.INFINITY;
             this.dist[p.r][p.c] = this.INFINITY;
             for (Point dir : this.DIRECTIONS) {

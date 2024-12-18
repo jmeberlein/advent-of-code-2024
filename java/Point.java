@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Point {
     public static Point UP    = new Point(-1,0);
     public static Point DOWN  = new Point(1,0);
@@ -13,6 +15,10 @@ public class Point {
 
     public Point add(Point p) {
         return new Point(p.r + this.r, p.c + this.c);
+    }
+
+    public int dist(Point p) {
+        return Math.abs(this.r - p.r) + Math.abs(this.c - p.c);
     }
 
     public Point ccw() {
@@ -32,6 +38,6 @@ public class Point {
     }
 
     public int hashCode() {
-        return 1000 * this.r + this.c;
+        return Objects.hash(this.c, this.r);
     }
 }
