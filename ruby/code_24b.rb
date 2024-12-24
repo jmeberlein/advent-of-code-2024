@@ -23,17 +23,20 @@ bad_xors = file.filter do |gate|
     /[^xy]{3} XOR [^xy]{3} -> [^z]/.match?(gate)
 end.map { |gate| gate[-3..] }
 
-# Any OR or AND gates must output either z45 or an internal wires
+# Any OR or AND gates must output either z45 or an internal wire
 bad_outputs = file.filter do |gate|
     / (OR|AND) .{3} -> z/.match?(gate) && !(/-> z45/.match?(gate))
 end.map { |gate| gate[-3..] }
 
+# Except for x00 XOR y00 -> z00, if an XOR gate takes x## or y## as an input,
+# its output must feed into another XOR gate
 bad_half_adders = file.filter do |gate|
     /[xy]\d{2} XOR [xy]\d{2} -> [^z]/.match?(gate)
 end.map { |gate| gate[-3..] }.filter do |wire|
     xor_gates.none? { |_,gate| gate.include?(wire) }
 end
 
+# Except for x00 AND y00, AND gates must feed into OR gates
 bad_ands = file.filter do |gate|
     /AND/.match?(gate) && !(/x00/.match?(gate))
 end.map { |gate| gate[-3..] }.filter do |wire|
