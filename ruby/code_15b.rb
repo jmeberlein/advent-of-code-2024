@@ -1,6 +1,12 @@
 require 'matrix'
 
-Grid = Struct.new(:grid) do
+class Grid
+    attr_accessor :grid
+
+    def initialize(grid)
+        self.grid = grid
+    end
+
     def [](idx)
         if idx.class.method_defined?(:[])
             self.grid[idx[0]][idx[1]]
@@ -35,15 +41,15 @@ def print_grid(grid, robot)
     grid.map.with_index do |row, r|
         line = row.map.with_index do |col, c|
             if r == robot[0] && c == robot[1]
-                '@'
+                '🤖'
             elsif col == :free
-                '.'
+                '  '
             elsif col == :left
-                '['
+                '🔎'
             elsif col == :right
-                ']'
+                '🔍'
             elsif col == :wall
-                '#'
+                '🧱'
             end
         end
         puts line.join
@@ -87,10 +93,9 @@ grid = Grid.new(file[...cutoff].map.with_index do |row, r|
         end
     end.reduce(&:+)
 end)
-path = file[(cutoff+1)..].join
 
 # print_grid(grid, robot)
-path.split('').map do |c|
+file[(cutoff+1)..].join.split('').map do |c|
     dir = case c
     when '^' then Vector[-1,0]
     when '>' then Vector[0,1]

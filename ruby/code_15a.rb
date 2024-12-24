@@ -35,13 +35,13 @@ def print_grid(grid, robot)
     grid.map.with_index do |row, r|
         line = row.map.with_index do |col, c|
             if r == robot[0] && c == robot[1]
-                '@'
+                '🤖'
             elsif col == :free
-                '.'
+                '  '
             elsif col == :block
-                'O'
+                '📦'
             elsif col == :wall
-                '#'
+                '🧱'
             end
         end
         puts line.join
@@ -66,6 +66,7 @@ grid = Grid.new(file[...cutoff].map.with_index do |row, r|
 end)
 path = file[(cutoff+1)..].join
 
+print_grid(grid, robot)
 path.split('').map do |c|
     dir = case c
     when '^' then Vector[-1,0]
@@ -88,6 +89,8 @@ path.split('').map do |c|
             robot += dir
         end
     end
+
+    print_grid(grid, robot)
 end
 
 res = (0...grid.rows).sum do |r|
